@@ -1,0 +1,56 @@
+.start-screen {
+  background-color: #404040;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  div {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      color: white;
+      text-shadow: 1px 1px 10px red;
+      font-size: 100px;
+      top: 15vh;
+
+      .small {
+        font-size: 70px;
+      }
+    }
+
+    h2 {
+      position: absolute;
+      font-size: 60px;
+      bottom: 80px;
+    }
+
+    .startbox {
+      height: 80vh;
+      border-radius: 10px;
+      border: 1px solid gold;
+      box-shadow: 4px 4px 10px rgba(128, 122, 58, 0.405);
+    }
+
+    .label-box {
+      position: absolute;
+      bottom: 0;
+      cursor: pointer;
+      &:hover {
+        filter: brightness(1.5);
+      }
+    }
+    .startbox-label {
+      width: 50vw;
+      height: 25vh;
+    }
+  }
+}
