@@ -19,7 +19,6 @@ export class GameComponent implements OnInit {
 
   newGame() {
     this.game = new Game();
-    console.log(this.game);
   }
 
   takeCard() {
@@ -32,7 +31,7 @@ export class GameComponent implements OnInit {
 
       setTimeout(() => {
         this.pickCardAnimation = false;
-        this.game.playedCard.push(this.currentCard);
+        this.game.playedCards.push(this.currentCard);
       }, 2000);
     }
   }
