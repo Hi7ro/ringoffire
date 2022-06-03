@@ -1,7 +1,3 @@
-.player-position {
-  position: absolute;
-  right: 0;
-}
 .field {
   height: 100vh;
   width: 100vw;
@@ -53,4 +49,14 @@
   100% {
     transform: scale(1.3) translateX(140px) translateY(-150px) rotate(-10deg);
   }
+}
+
+.player-position {
+  position: absolute;
+  right: 0;
+}
+.btn-add {
+  position: absolute;
+  bottom: 32px;
+  right: 32px;
 }
