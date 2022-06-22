@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyAiJBjI7xTwg7d3keYd0k4nRSYoE5M68Mc',
+    authDomain: 'ringoffire-d8f1f.firebaseapp.com',
+    projectId: 'ringoffire-d8f1f',
+    storageBucket: 'ringoffire-d8f1f.appspot.com',
+    messagingSenderId: '312293522964',
+    appId: '1:312293522964:web:01a4df281865ca9d793101',
+  },
 };
 
 /*
