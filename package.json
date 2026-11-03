@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:demo": "ng build --configuration demo && node scripts/finalize-demo.mjs",
+    "typecheck:demo": "ngc -p tsconfig.demo.json --noEmit",
+    "test:demo": "node scripts/check-demo.cjs",
+    "start:local": "ng serve --configuration demo --host 127.0.0.1 --port 4307 --serve-path /demos/ring-of-fire/"
   },
   "private": true,
   "dependencies": {

@@ -65,6 +65,54 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "demo": {
+              "main": "src/demo/main.ts",
+              "index": "src/demo/index.html",
+              "tsConfig": "tsconfig.demo.json",
+              "outputPath": "dist/demo-ring-of-fire",
+              "baseHref": "/demos/ring-of-fire/",
+              "styles": [
+                "src/demo/global.scss"
+              ],
+              "assets": [
+                {
+                  "glob": "poker.jpg",
+                  "input": "src/assets/img",
+                  "output": "assets/img"
+                },
+                {
+                  "glob": "wood.jpg",
+                  "input": "src/assets/img",
+                  "output": "assets/img"
+                },
+                {
+                  "glob": "avatar_1.png",
+                  "input": "src/assets/img",
+                  "output": "assets/img"
+                },
+                {
+                  "glob": "favicon.jpg",
+                  "input": "src/assets/img",
+                  "output": "assets/img"
+                },
+                {
+                  "glob": "*.png",
+                  "input": "src/assets/player",
+                  "output": "assets/player"
+                }
+              ],
+              "optimization": true,
+              "buildOptimizer": true,
+              "sourceMap": false,
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "600kb",
+                  "maximumError": "1mb"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -77,6 +125,9 @@
             },
             "development": {
               "browserTarget": "ringoffire:build:development"
+            },
+            "demo": {
+              "browserTarget": "ringoffire:build:demo"
             }
           },
           "defaultConfiguration": "development"

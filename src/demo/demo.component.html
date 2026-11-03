@@ -1,0 +1,51 @@
+<a href="#main" class="skip-link">Skip to game</a>
+<main id="main" tabindex="-1">
+  <header class="game-header">
+    <div class="header-brand"><a href="./" class="wordmark">RING <span>OF</span> FIRE</a><p>A deck. A table. Your people.</p></div>
+    <div class="header-controls"><div class="header-actions"><a class="portfolio-link" href="/">← Portfolio</a><button *ngIf="players.length >= 2" class="quiet" type="button" (click)="restartRound()">New round</button><button class="reset" type="button" (click)="reset()">Clear table</button></div><p class="save-status" role="status">{{ storageMessage }}</p></div>
+  </header>
+
+  <ng-template #playerForm>
+    <section class="player-editor" id="player-editor" aria-labelledby="editor-title">
+      <h2 id="editor-title">{{ editingPlayerId ? 'Edit player' : 'Add a player' }}</h2>
+      <form (ngSubmit)="addPlayer()">
+        <label for="player-name">Player name</label>
+        <input id="player-name" name="playerName" [(ngModel)]="playerName" maxlength="24" autocomplete="off" placeholder="e.g. Alex">
+        <fieldset class="avatar-picker"><legend>Choose an avatar</legend><div class="avatar-options"><button *ngFor="let avatar of avatars; let i = index" type="button" (click)="selectedAvatar = avatar" [attr.aria-pressed]="selectedAvatar === avatar" [attr.aria-label]="'Avatar ' + (i + 1)"><img [src]="'assets/player/' + avatar + '.png'" alt=""></button></div></fieldset>
+        <div class="editor-actions"><button class="primary" type="submit">{{ editingPlayerId ? 'Save changes' : 'Add player' }}</button><button *ngIf="editingPlayerId" type="button" class="danger" (click)="removeEditingPlayer()">Remove player</button><button *ngIf="editingPlayerId || started" type="button" class="quiet" (click)="cancelEdit()">Cancel</button></div>
+      </form>
+      <p class="error" role="alert" *ngIf="error">{{ error }}</p>
+    </section>
+  </ng-template>
+
+  <section *ngIf="!started" class="welcome" aria-labelledby="welcome-title">
+    <div class="welcome-art"><img src="assets/img/poker.jpg" alt="Original Ring of Fire poker table artwork"><div><p>THE SHARED-DEVICE EDITION</p><h1 id="welcome-title">Bring everyone<br>to the table.</h1><span>52 cards · 2–8 players · Classic party rules</span></div></div>
+    <div class="setup">
+      <p class="eyebrow">YOUR TABLE</p><p>Add your players, choose their faces, and pass the device around. Your table is saved here so you can come back to it.</p>
+      <ul class="setup-players" aria-label="Players"><li *ngFor="let player of players"><button type="button" (click)="editPlayer(player)" [attr.aria-label]="'Edit ' + player.name"><img [src]="'assets/player/' + player.avatar + '.png'" alt=""><span>{{ player.name }}</span><small>Edit</small></button></li></ul>
+      <ng-container *ngTemplateOutlet="playerForm"></ng-container>
+      <div class="setup-actions"><button type="button" class="primary" (click)="startGame()">Start game →</button><button type="button" class="quiet" *ngIf="!players.length" (click)="addSamplePlayers()">Try Alex & Sam</button></div>
+      <p class="privacy">Two to eight players on this device. No account or online room is needed.</p>
+    </div>
+  </section>
+
+  <section *ngIf="started" class="game-board" style="background-image:linear-gradient(#1d150d65,#1d150da8),url(assets/img/wood.jpg)" aria-labelledby="table-title">
+    <div class="table-copy"><p class="eyebrow">THE ROUND IS YOURS</p><h1 id="table-title">Keep the<br><em>fire going.</em></h1>
+      <p class="turn" aria-live="polite">{{ game.stack.length ? players[game.currentPlayer].name + ' is up next.' : 'All 52 cards played. That’s a wrap!' }}</p>
+      <ul class="players" aria-label="Players at the table"><li *ngFor="let player of players; let i = index" [class.active]="i === game.currentPlayer && game.stack.length"><button type="button" (click)="editPlayer(player)" [attr.aria-label]="'Edit ' + player.name"><img [src]="'assets/player/' + player.avatar + '.png'" alt=""><span>{{ player.name }}</span><span *ngIf="i === game.currentPlayer && game.stack.length" class="turn-dot" aria-hidden="true">●</span><small>Edit</small></button></li></ul>
+      <button type="button" class="quiet" (click)="openPlayerEditor()">Add / manage players</button>
+      <p class="cards-left">{{ game.stack.length }} cards left · {{ game.playedCards.length }} played</p>
+    </div>
+    <div class="cards-area"><button type="button" class="deck" (click)="takeCard()" [disabled]="!game.stack.length || game.pickCardAnimation" aria-label="Draw the next card"><span class="deck-ring" aria-hidden="true">RING<br><small>OF</small><br>FIRE</span><span>{{ game.pickCardAnimation ? 'Drawing…' : game.stack.length ? 'Draw a card' : 'Deck complete' }} ↓</span></button>
+      <div *ngIf="game.currentCard" class="face-card" [class.red]="isRed()" [class.drawing]="game.pickCardAnimation" role="img" [attr.aria-label]="cardName()"><span>{{ cardRank() }}<small>{{ suit() }}</small></span><strong aria-hidden="true">{{ suit() }}</strong><span class="flipped" aria-hidden="true">{{ cardRank() }}<small>{{ suit() }}</small></span></div>
+      <div *ngIf="!game.currentCard" class="card-placeholder">Your first card<br>is waiting.</div>
+    </div>
+    <aside *ngIf="editorOpen" class="game-editor"><ng-container *ngTemplateOutlet="playerForm"></ng-container></aside>
+    <section class="rule-card" aria-live="polite" aria-atomic="true"><p class="eyebrow">{{ game.currentCard ? lastPlayer + ' drew ' + cardName() : 'READY WHEN YOU ARE' }}</p><h2>{{ game.currentCard ? rule().title : 'Draw your first card.' }}</h2><p>{{ game.currentCard ? rule().description : 'Click the deck or focus it and press Enter. Follow the rule, then let the next player draw.' }}</p></section>
+    <div class="round-end" *ngIf="!game.stack.length"><h2>A full round, well played.</h2><p>Keep your players and shuffle a new deck.</p><button type="button" class="primary" (click)="restartRound()">Play another round</button></div>
+    <details class="history"><summary>Played cards ({{ history.length }})</summary><p *ngIf="!history.length">No cards have been drawn yet.</p><ol><li *ngFor="let turn of history"><span>{{ cardName(turn.card) }}</span><span>{{ turn.playerName }}</span></li></ol></details>
+  </section>
+
+  <section class="rules-panel" aria-labelledby="rules-heading"><div><p class="eyebrow">PLAY YOUR WAY</p><h2 id="rules-heading">The rules at your table.</h2><label for="rule-mode">Rule set</label><select id="rule-mode" [ngModel]="ruleMode" (ngModelChange)="setRuleMode($event)"><option value="classic">Classic party rules</option><option value="alcohol-free">Alcohol-free challenges</option></select><p>{{ ruleMode === 'classic' ? 'The original party-game rules. Choose your own drinks and adapt or skip any prompt together.' : 'A separate alcohol-free set of social challenges. The deck and turn order stay the same.' }}</p></div><details><summary>See all 13 card rules</summary><ol><li *ngFor="let item of rules; let i = index"><h3>{{ i === 0 ? 'A' : i === 10 ? 'J' : i === 11 ? 'Q' : i === 12 ? 'K' : i + 1 }} · {{ item.title }}</h3><p>{{ item.description }}</p></li></ol></details></section>
+</main>
+<footer>Ring of Fire · Full shared-device game · Your table stays in this browser.</footer>
